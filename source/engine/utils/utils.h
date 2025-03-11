@@ -3,6 +3,8 @@
 #include "base.h"
 #include "log.h"
 #include "math.h"
+#include "cvars.h"
+#include "threadpool.h"
 
 #define ENABLE_LOG
 
@@ -18,4 +20,12 @@
 #define LOG_WARN(...)   
 #define LOG_ERROR(...)    
 #define LOG_FATAL(...) { throw std::runtime_error("Utils fatal!"); }
+#endif
+
+#ifdef APP_DEBUG
+#define CHECK(x) { if(!(x)) { LOG_FATAL("Check error, at line {0} on file {1}.", __LINE__, __FILE__); __debugbreak(); } }
+#define ASSERT(x, ...) { if(!(x)) { LOG_FATAL("Assert failed: {2}, at line {0} on file {1}.", __LINE__, __FILE__, __VA_ARGS__); __debugbreak(); } }
+#else
+#define CHECK(x) { if(!(x)) { LOG_FATAL("Check error."); } }
+#define ASSERT(x, ...) { if(!(x)) { LOG_FATAL("Assert failed: {0}.", __VA_ARGS__); } }
 #endif

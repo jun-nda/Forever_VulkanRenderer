@@ -4,7 +4,12 @@
 class Editor
 {
 private:
+	Editor() = default;
 
+	bool init();
+	bool release();
+
+	//void tick(const engine::RuntimeModuleTickData& )
 
 public:
 	// Get editor instance

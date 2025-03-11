@@ -1,10 +1,41 @@
 #include "engine.h"
+#include "utils/utils.h"
 
 #include <iostream>
+#include <filesystem>
 
 #define LOG_TRACE(...) { std::cout << (__VA_ARGS__) << std::endl; }
 
 namespace engine{
+
+	inline void tryImportOrCreateIni(const std::string& path)
+	{
+		if (std::filesystem::exists(path))
+		{
+			CVarSystem::get()->importConfig(path);
+		}
+		else
+		{
+			CVarSystem::get()->exportAllConfig(path);
+		}
+	};
+
+	void initBasicCVarConfigs()
+	{
+		std::filesystem::create_directories("config");
+
+		std::filesystem::create_directories(kLogCacheFolder);
+		std::filesystem::create_directories(kShaderCacheFolder);
+		std::filesystem::create_directories(kConfigCacheFolder);
+
+		// Always override cvar configs.
+		CVarSystem::get()->exportAllConfig("config/default.ini");
+
+		// try import or create engine and editor ini.
+		tryImportOrCreateIni("config/engine.ini");
+		tryImportOrCreateIni("config/editor.ini");
+	}
+
 	Engine* engine::Engine::get( )
 	{
 		static Engine engine;
@@ -26,14 +57,16 @@ namespace engine{
 			return this->init( );
 		});
 
-		//m_windowsInfo.loopHookHandle = in.registerLoopBody([this](const GLFWWindows*, const ApplicationTickData& tickData)
-		//{ 
-		//	return this->loop(tickData); 
-		//});
-		//m_windowsInfo.releaseHookHandle = in.registerReleaseBody([this](const GLFWWindows*) 
-		//{ 
-		//	return this->release(); 
-		//});
+		m_windowsInfo.loopHookHandle = in.registerLoopBody([this](const GLFWWindows*, const ApplicationTickData& tickData)
+		{ 
+			return this->loop(tickData); 
+		});
+		m_windowsInfo.releaseHookHandle = in.registerReleaseBody([this](const GLFWWindows*) 
+		{ 
+			return this->release(); 
+		});
+
+		CHECK(m_windowsInfo.isCompleted());
 
 		return false;
 	}
@@ -41,6 +74,10 @@ namespace engine{
 
 	bool Engine::init( )
 	{
+		m_moduleState = EModuleState::Initing;
+
+		bool bResult = true;
+
 		return true;
 	}
 
