@@ -5,6 +5,7 @@
 #include "math.h"
 #include "cvars.h"
 #include "threadpool.h"
+#include "uuid.h"
 
 #define ENABLE_LOG
 

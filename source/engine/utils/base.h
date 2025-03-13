@@ -2,6 +2,8 @@
 #include "noncopyable.h"
 #include <map>
 
+#include "engine.h"
+
 namespace engine
 {
 	struct ApplicationTickData
@@ -64,4 +66,35 @@ namespace engine
 		uint64_t gameTickCount = 0;
 	};
 
+	class Engine;
+	
+	class IRuntimeModule : NonCopyable
+	{
+	public:
+		explicit IRuntimeModule(Engine* in) : m_engine(in) { }
+
+		virtual ~IRuntimeModule() = default;
+
+		// Used to check module dependency.
+		virtual void registerCheck(Engine* engine){ }
+
+		virtual bool init() = 0;
+		virtual bool tick(const RuntimeModuleTickData& tickData) = 0;
+
+		virtual bool beforeRelease() { return true; }
+		virtual bool release() = 0;
+
+		const Engine* getEngine() const { return m_engine; }
+	protected:
+		Engine* m_engine;
+	};
+
+	// 编译期就能决定了,static_assert 编译期检查
+	template<typename T>
+	constexpr void checkRuntimeModule()
+	{
+		static_assert(std::is_base_of<IRuntimeModule, T>::value, "This type doesn't match runtime module.");
+		static_assert(std::is_constructible<T, Engine*>::value, "All module must can construct by Engine class pointer.");
+	}
+	
 }

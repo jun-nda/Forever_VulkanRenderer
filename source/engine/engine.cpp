@@ -78,6 +78,12 @@ namespace engine{
 
 		bool bResult = true;
 
+		m_timer.init(5.0f, 5.0f);
+		m_threadPool = std::make_unique<ThreadPool>();
+
+		// Register basic module of the engine.
+		bResult &= registerRuntimeModule<AssetManager>();
+		
 		return true;
 	}
 
