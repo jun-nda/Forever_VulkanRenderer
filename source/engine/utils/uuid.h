@@ -6,7 +6,7 @@
 namespace engine
 {
     using UUID = std::string;
-    [[nodiscard]] extern UUID GenerateUUID();
+    [[nodiscard]] extern UUID buildUUID();
 
     // Random device guid, faster than UUID.
     using UUID64u = uint64_t;

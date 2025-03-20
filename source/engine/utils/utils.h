@@ -7,6 +7,12 @@
 #include "threadpool.h"
 #include "uuid.h"
 
+
+
+
+#include <utfcpp/utf8.h>
+#include <utfcpp/utf8/cpp17.h>
+
 #define ENABLE_LOG
 
 #ifdef ENABLE_LOG
@@ -30,3 +36,27 @@
 #define CHECK(x) { if(!(x)) { LOG_FATAL("Check error."); } }
 #define ASSERT(x, ...) { if(!(x)) { LOG_FATAL("Assert failed: {0}.", __VA_ARGS__); } }
 #endif
+
+namespace
+{
+	using u8str = std::string;
+
+
+
+	inline static std::string buildRelativePathUtf8(
+		const std::filesystem::path& shortPath,
+		const std::filesystem::path& longPath)
+	{
+		const std::u16string shortPath16 = std::filesystem::absolute(shortPath).u16string();
+		const std::u16string longPath16 = std::filesystem::absolute(longPath).u16string();
+
+		auto result = utf8::utf16to8(longPath16.substr(shortPath16.size()));
+
+		if (result.starts_with("\\") || result.starts_with("/"))
+		{
+			result = result.erase(0, 1);
+		}
+
+		return result;
+	}
+}
