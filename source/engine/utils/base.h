@@ -2,8 +2,6 @@
 #include "noncopyable.h"
 #include <map>
 
-#include "engine.h"
-
 namespace engine
 {
 	struct ApplicationTickData

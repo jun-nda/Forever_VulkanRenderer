@@ -27,13 +27,19 @@ file(GLOB_RECURSE editorSource CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/source/e
 
 include_directories()
 
-add_executable(main ${editorSource} ${editorHeaders} ${engineSource} ${engineHeaders})
+add_executable(Forever_VulkanRenderer ${editorSource} ${editorHeaders} ${engineSource} ${engineHeaders})
 
 source_group(TREE "${PROJECT_SOURCE_DIR}/source/engine" PREFIX "engine" FILES ${engineSource} ${engineHeaders}) 
 source_group(TREE "${PROJECT_SOURCE_DIR}/source/editor" PREFIX "editor" FILES ${editorSource} ${editorHeaders}) 
 
-target_link_libraries(main PUBLIC glfw assimp)
-target_include_directories(main PUBLIC 
+find_package(Vulkan REQUIRED)
+
+target_precompile_headers(Forever_VulkanRenderer PRIVATE 
+    "${PROJECT_SOURCE_DIR}/source/engine/utils/utils.h" 
+)
+
+target_link_libraries(Forever_VulkanRenderer PUBLIC glfw assimp Vulkan::Vulkan)
+target_include_directories(Forever_VulkanRenderer PUBLIC 
     "${PROJECT_SOURCE_DIR}/external/include" 
     "${PROJECT_SOURCE_DIR}/source/engine" 
 )

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "utils/utils.h"
-#include "utils/glfw.h"
 #include "utils/timer.h"
 
 namespace engine{
@@ -62,7 +61,21 @@ namespace engine{
 
 			return false;
 		}
-		
+
+		template <typename T>
+		T* getRuntimeModule() const
+		{
+			checkRuntimeModule<T>();
+
+			auto name = typeid(T).name();
+			size_t moduleIndex = m_registeredModulesIndexMap.at(name);
+			return static_cast<T*>(m_runtimeModules.at(moduleIndex).get());
+		}
+	// Get method
+	public:
+		const GLFWWindows* getGLFWWindows() const { return m_windowsInfo.windows; }
+		GLFWWindows* getGLFWWindows() { return m_windowsInfo.windows; }
+
 	private:
 		struct GLFWWindowsInfo{
 			bool isCompleted( ) const; 

@@ -1,3 +1,5 @@
+#pragma once // ∑¿÷π÷ÿ∂®“Â
+
 #include "noncopyable.h"
 #include "delegate.h"
 

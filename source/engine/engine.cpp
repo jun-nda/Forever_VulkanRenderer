@@ -82,7 +82,7 @@ namespace engine{
 		m_threadPool = std::make_unique<ThreadPool>();
 
 		// Register basic module of the engine.
-		bResult &= registerRuntimeModule<AssetManager>();
+		//bResult &= registerRuntimeModule<AssetManager>();
 		
 		return true;
 	}

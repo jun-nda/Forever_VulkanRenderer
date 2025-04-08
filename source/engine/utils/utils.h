@@ -1,15 +1,19 @@
 #pragma once
 
+#include <unordered_map>
+#include <unordered_set>
+
+#include "glfw.h"
 #include "base.h"
 #include "log.h"
 #include "math.h"
 #include "cvars.h"
 #include "threadpool.h"
 #include "uuid.h"
+#include "noncopyable.h"
 
 
-
-
+#include <filesystem>
 #include <utfcpp/utf8.h>
 #include <utfcpp/utf8/cpp17.h>
 
@@ -37,6 +41,56 @@
 #define ASSERT(x, ...) { if(!(x)) { LOG_FATAL("Assert failed: {0}.", __VA_ARGS__); } }
 #endif
 
+#define  CHECK_ENTRY() ASSERT(false, "Should not entry here, fix me!")
+#define UN_IMPLEMENT() ASSERT(false, "Un-implement yet, fix me!")
+
+struct __engine_ConstructOnceObject_Log
+{
+	enum class ELogType
+	{
+		Trace,
+		Info,
+		Warn,
+		Error,
+	};
+
+	explicit __engine_ConstructOnceObject_Log(const std::string& in, ELogType type)
+	{
+		switch (type)
+		{
+		case ELogType::Trace:
+		{
+			LOG_TRACE(in);
+			return;
+		}
+		case ELogType::Info:
+		{
+			LOG_INFO(in);
+			return;
+		}
+		case ELogType::Warn:
+		{
+			LOG_WARN(in);
+		}
+		case ELogType::Error:
+		{
+			LOG_ERROR(in);
+#ifdef APP_DEBUG
+			__debugbreak();
+#endif
+			return;
+		}
+		}
+
+		CHECK_ENTRY();
+	}
+};
+
+#define LOG_TRACE_ONCE(str) { static __engine_ConstructOnceObject_Log __local_trace(str, __engine_ConstructOnceObject_Log::ELogType::Trace); }
+#define LOG_INFO_ONCE(str)  { static __engine_ConstructOnceObject_Log __local_info(str,  __engine_ConstructOnceObject_Log::ELogType::Info);  }
+#define LOG_WARN_ONCE(str)  { static __engine_ConstructOnceObject_Log __local_warn(str,  __engine_ConstructOnceObject_Log::ELogType::Warn);  }
+#define LOG_ERROR_ONCE(str) { static __engine_ConstructOnceObject_Log __local_error(str, __engine_ConstructOnceObject_Log::ELogType::Error); }
+
 namespace
 {
 	using u8str = std::string;
@@ -59,4 +113,20 @@ namespace
 
 		return result;
 	}
+
+	// Boost hash combine.
+	static inline size_t hashCombine(size_t lhs, size_t rhs)
+	{
+		lhs ^= rhs + 0x9e3779b9 + (lhs << 6) + (lhs >> 2);
+		return lhs;
+	}
+
+	// Boost hash combine.
+	template <class T>
+	inline void hashCombine(std::size_t& seed, const T& v)
+	{
+		std::hash<T> hasher;
+		seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+	}
+
 }

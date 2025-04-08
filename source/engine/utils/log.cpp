@@ -7,6 +7,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include "log.h"
 
 namespace engine
 {

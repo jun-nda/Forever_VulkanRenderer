@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <functional>
 #include <GLFW/glfw3.h>
@@ -263,6 +265,12 @@ namespace engine
 		void unregisterClosedEventBody(DelegateHandle delegate);
 
 		void close() { m_data.bShouldRun = false; }
+		
+	// Get method
+	public:
+		GLFWwindow* getGLFWWindowHandle() const { return m_data.window; }
+		const auto& getData() const { return m_data; }
+		const auto& getName() const { return m_name; }
 	private:
 		std::string m_name;
 		GLFWWindowData m_data;
