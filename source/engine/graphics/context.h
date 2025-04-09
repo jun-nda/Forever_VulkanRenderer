@@ -130,6 +130,11 @@ namespace engine
 		VkSurfaceKHR m_surface = VK_NULL_HANDLE;
 		Swapchain m_swapchain;
 		EBackBufferFormat m_backbufferFormat = EBackBufferFormat::SRGB_NonLinear;
+
+
+	private:
+		// vulkan·±ÔÓµÄ³õÊ¼»¯
+		void initInstance();
 		
 	};
 

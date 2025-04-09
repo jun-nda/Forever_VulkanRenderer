@@ -1,6 +1,10 @@
 
 #include <engine.h>
 
+#include <renderer/renderer.h>
+
+class HubWidget;
+
 class Editor
 {
 private:
@@ -21,4 +25,7 @@ public:
 
 private:
 	engine::GLFWWindows m_windows;
+
+	engine::WidgetManager m_widgetManager;
+	HubWidget* m_hubHandle = nullptr;
 };

@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "utils/utils.h"
+#include "renderer/renderer.h"
 
 #include <iostream>
 #include <filesystem>
@@ -82,7 +83,9 @@ namespace engine{
 		m_threadPool = std::make_unique<ThreadPool>();
 
 		// Register basic module of the engine.
-		//bResult &= registerRuntimeModule<AssetManager>();
+		bResult &= registerRuntimeModule<VulkanContext>();
+		bResult &= registerRuntimeModule<RendererManager>();
+		
 		
 		return true;
 	}

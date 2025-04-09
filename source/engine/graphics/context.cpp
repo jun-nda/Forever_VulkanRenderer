@@ -18,6 +18,15 @@ namespace engine
 
     bool VulkanContext::init()
     {
+        if (m_engine->isWindowApplication())
+        {
+            m_window = m_engine->getGLFWWindows()->getGLFWWindowHandle();
+        }
+
+        // Create vulkan instance.
+        initInstance();
+
+
         return false;
     }
 
@@ -102,6 +111,7 @@ namespace engine
         static auto pushDescriptorSetKHR = (PFN_vkCmdPushDescriptorSetKHR)vkGetDeviceProcAddr(m_device, "vkCmdPushDescriptorSetKHR");
         pushDescriptorSetKHR(commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites);
     }
+
     VulkanContext* getContext()
     {
         return Engine::get()->getRuntimeModule<VulkanContext>();

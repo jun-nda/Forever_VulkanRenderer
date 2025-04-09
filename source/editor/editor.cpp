@@ -1,11 +1,22 @@
 #include "editor.h"
 #include "engine.h"
 
+#include "widgets/hub.h"
+
+
 using namespace engine;
 using EWindowModeType = GLFWWindows::InitConfig::EWindowMode;
 
 bool Editor::init()
 {
+#if _WIN32
+    // Console output set to utf8 encode.
+    SetConsoleOutputCP(CP_UTF8);
+#endif 
+
+    // Add hub widget when init.
+    m_hubHandle = m_widgetManager.addWidget<HubWidget>();
+
     return true;
 }
 

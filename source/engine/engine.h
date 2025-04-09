@@ -68,6 +68,7 @@ namespace engine{
 			checkRuntimeModule<T>();
 
 			auto name = typeid(T).name();
+			assert(m_registeredModulesIndexMap.contains(name) && "Forget registerRuntimeModule?");
 			size_t moduleIndex = m_registeredModulesIndexMap.at(name);
 			return static_cast<T*>(m_runtimeModules.at(moduleIndex).get());
 		}
@@ -75,6 +76,9 @@ namespace engine{
 	public:
 		const GLFWWindows* getGLFWWindows() const { return m_windowsInfo.windows; }
 		GLFWWindows* getGLFWWindows() { return m_windowsInfo.windows; }
+
+		// You should call this function after initGLFWWindowsHook called.
+		bool isWindowApplication() const { return m_windowsInfo.isCompleted(); }
 
 	private:
 		struct GLFWWindowsInfo{
